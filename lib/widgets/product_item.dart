@@ -15,8 +15,10 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: GestureDetector(
+          // Tap vào ảnh
           onTap: () {
             Navigator.of(context).pushNamed(
+              // Di chuyển tới widget ProductDetailScreen vs đường dẫn
               ProductDetailScreen.routeName,
               arguments: id,
             );
