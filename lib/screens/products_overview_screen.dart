@@ -69,7 +69,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer(), // thư mục
       body: ProductsGrid(_showOnlyFavorites),
     );
   }
