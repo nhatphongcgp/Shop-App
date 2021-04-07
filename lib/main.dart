@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       // ChangeNotifierProvider được sinh ra để lắng nghe ChangeNotifier.
       //  Các thành phần con sẽ được rebuild khi hàm notifyListener() ở ChangeNotifier được gọi.
-      create: (ctx) => Products(),
+      create: (ctx) => Products(), // Object for entire app
       child: MaterialApp(
           title: 'MyShop',
           theme: ThemeData(

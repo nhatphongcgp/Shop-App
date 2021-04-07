@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/product.dart';
+import 'product.dart';
 
 class Products with ChangeNotifier {
   //ChangeNotifier là một lớp được tạo ra để thông báo các thay đổi bên trong nó
@@ -40,15 +40,36 @@ class Products with ChangeNotifier {
   ];
 
   List<Product> get items {
+    // if (_showFavoritesOnly) {
+    //   return _items.where((prodItem) => prodItem.isFavorite).toList();
+    // }
     return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    // Trả về list favorites
+    return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
 
   Product findById(String id) {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
+  // void showFavoritesOnly() {
+  //   _showFavoritesOnly = true;
+  //   notifyListeners();
+  // }
+
+  // void showAll() {
+  //   _showFavoritesOnly = false;
+  //   notifyListeners();
+  // }
+
   void addProduct() {
     // _items.add(value);
+    // Hàm này được sử dụng cho Page nào lắng nghe model này biết rằng
+    // đã có sự thay đổi trạng thái mà nó đang quản lý
+    // và sau đó hàm build sẽ được gọi lại để thực hiện thay đổi widget đó.
     notifyListeners();
   }
 }
