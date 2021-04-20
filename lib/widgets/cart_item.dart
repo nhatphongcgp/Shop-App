@@ -3,21 +3,21 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 
-//Item cụ thể đã mua
 class CartItem extends StatelessWidget {
+  // Item sản phẩm trong giỏ hàng
   final String id;
   final String productId;
   final double price;
-  final int quantity;
   final String title;
+  final int quantity;
 
-  CartItem(
-    this.id,
-    this.productId,
-    this.price,
-    this.quantity,
-    this.title,
-  );
+  CartItem({
+    @required this.quantity,
+    @required this.price,
+    @required this.id,
+    @required this.title,
+    @required this.productId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +32,38 @@ class CartItem extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        margin: EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 4,
-        ),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Bạn chắc chứ'),
+            content:
+                Text('Bạn có muốn bỏ sản phẩm này ra khỏi giỏ hàng không ?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Không'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text('Có'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
+      },
       onDismissed: (direction) {
-        // Trượt ngang để xóa sản phẩm
         Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
       child: Card(
-        margin: EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 4,
-        ),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
         child: Padding(
           padding: EdgeInsets.all(8),
           child: ListTile(
@@ -59,7 +76,7 @@ class CartItem extends StatelessWidget {
               ),
             ),
             title: Text(title),
-            subtitle: Text('Total: \$${(price * quantity)}'),
+            subtitle: Text('Tổng: \$${(price * quantity)}'),
             trailing: Text('$quantity x'),
           ),
         ),

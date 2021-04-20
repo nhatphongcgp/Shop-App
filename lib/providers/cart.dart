@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class CartItem {
   final String id;
@@ -8,9 +8,9 @@ class CartItem {
 
   CartItem({
     @required this.id,
+    @required this.price,
     @required this.title,
     @required this.quantity,
-    @required this.price,
   });
 }
 
@@ -22,58 +22,81 @@ class Cart with ChangeNotifier {
   }
 
   int get itemCount {
+    // đếm số lượng sản phẩm khác loại
     return _items.length;
   }
 
   double get totalAmount {
-    // Tổng tiền cho all sản phẩm đã mua
-    var total = 0.0;
+    // Tổng tiền cho tất cả sản phẩm đã mua
+    double total = 0;
     _items.forEach((key, cartItem) {
-      total += cartItem.price * cartItem.quantity;
+      total += cartItem.price * cartItem.quantity.toDouble();
     });
     return total;
   }
 
-  void addItem(
-    String productId,
-    double price,
-    String title,
-  ) {
+  void addItem(String productId, double price, String title) {
+    // hàm thêm sản phẩm vài giỏ hàng
     if (_items.containsKey(productId)) {
-      // Kiểm tra có tồn tại hay không nếu có tăng lên
-      // change quantity...
+      // Kiểm tra có tồn tại hay không dựa vào Id của sản phẩm nếu có tăng lên số lượng lên bằng update method
+      _items.update(
+        productId,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          price: existingCartItem.price,
+          title: existingCartItem.title,
+          quantity: existingCartItem.quantity + 1,
+        ),
+      );
+    } else {
+      _items.putIfAbsent(
+          // ngược lại nếu không có thì thêm vào
+          productId,
+          () => CartItem(
+                id: DateTime.now().toString(),
+                price: price,
+                title: title,
+                quantity: 1,
+              ));
+    }
+    notifyListeners();
+  }
+
+  void removeItem(String productId) {
+    // xóa sản phẩm trong Widget giỏ hàng
+    _items.remove(productId);
+    notifyListeners();
+  }
+
+  void removeSingleItem(String productId) {
+    // Hàm này xảy ra trong Widget Product Item (product_item.dart)
+    // hàm gở bõ sản phẩm khi người dùng nhấn vào chữ "Hoàn tác"
+    if (!_items.containsKey(productId)) {
+      // xem có tồn tại sản phẩm hay chưa thông qua Id sản phẩm
+      return;
+    }
+    if (_items[productId].quantity > 1) {
+      // khi tồn tại sản phẩm lớn hơn một
       _items.update(
         productId,
         (existingCartItem) => CartItem(
           id: existingCartItem.id,
           title: existingCartItem.title,
           price: existingCartItem.price,
-          quantity: existingCartItem.quantity + 1,
+          quantity: existingCartItem.quantity -
+              1, // Giảm đi 1 đơn vị khi hoàn tác thêm vào giỏ hàng
         ),
       );
     } else {
-      _items.putIfAbsent(
-        // Thêm vào
-        productId,
-        () => CartItem(
-          id: DateTime.now().toString(),
-          title: title,
-          price: price,
-          quantity: 1,
-        ),
-      );
+      // khi sản phẩm còn lại 1 tiến hành gỡ bỏ sản phẩm
+      _items.remove(productId);
     }
     notifyListeners();
   }
 
-  void removeItem(String productId) {
-    // Gỡ bỏ
-    _items.remove(productId);
-    notifyListeners();
-  }
-
   void clear() {
-    // Xóa item ra khỏi giỏ hàng khi đã oder
+    // Xóa sản phẩm khi User nhấn đặt ngay
+    // hàm thực hiện trong Widget giỏ hàng
     _items = {};
     notifyListeners();
   }

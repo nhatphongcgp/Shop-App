@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
+  //ChangeNotifier là một lớp được tạo ra để thông báo các thay đổi bên trong nó
   final String id;
   final String title;
   final String description;
@@ -17,8 +21,24 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
+    // đại diện cho một hoạt động bất đồng bộ
+    final url =
+        'https://flutter-app-5493d-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+    final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+
+    try {
+      final response = await http.put(url, body: json.encode(isFavorite));
+
+      if (response.statusCode >= 400) {
+        isFavorite = oldStatus;
+        notifyListeners();
+      }
+    } catch (error) {
+      isFavorite = oldStatus;
+      notifyListeners();
+    }
   }
 }
