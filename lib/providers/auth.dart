@@ -98,6 +98,7 @@ class Auth with ChangeNotifier {
   }
 
   void _autoLogout() {
+    // Tự động log out theo time
     if (_authTimer != null) {
       _authTimer.cancel();
     }

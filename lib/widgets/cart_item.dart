@@ -76,8 +76,8 @@ class CartItem extends StatelessWidget {
               ),
             ),
             title: Text(title),
-            subtitle: Text('Tổng: \$${(price * quantity)}'),
-            trailing: Text('$quantity x'),
+            subtitle: Text('Tổng: \$${(price * quantity)}'), // Tổng tiền
+            trailing: Text('$quantity x'), //Số lượng
           ),
         ),
       ),
